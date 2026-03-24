@@ -1,0 +1,99 @@
+{
+  "app_name": "Instagoogleface.com",
+  "theme_and_identity": {
+    "theme": "dark",
+    "style": "Cyber-Intelligence SaaS",
+    "emotional_tone": "Authoritative, mysterious, secure, high-tech, premium",
+    "archetype": "Electric & Neon crossed with Jewel & Luxury (Premium Hacker)"
+  },
+  "typography": {
+    "fonts": {
+      "headings": "Outfit",
+      "body": "Manrope",
+      "mono": "JetBrains Mono"
+    },
+    "rules": {
+      "headings": "Use tracking-tight for all headings > 24px. Never use Inter for headings.",
+      "data_points": "Use JetBrains Mono for usernames, IDs, IPs, and OSINT risk scores.",
+      "body": "Use Manrope leading-relaxed for any explanatory text."
+    },
+    "import_url": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Manrope:wght@400;500;600&family=Outfit:wght@300;500;700&display=swap"
+  },
+  "colors": {
+    "background": {
+      "base": "#020617",
+      "card": "rgba(255, 255, 255, 0.02)",
+      "card_hover": "rgba(255, 255, 255, 0.04)"
+    },
+    "text": {
+      "primary": "#F8FAFC",
+      "secondary": "#94A3B8",
+      "muted": "#475569"
+    },
+    "accent": {
+      "primary": "#00E5FF",
+      "primary_glow": "rgba(0, 229, 255, 0.2)",
+      "secondary": "#1E293B"
+    },
+    "risk_scale": {
+      "low": "#10B981",
+      "medium": "#F59E0B",
+      "high": "#EF4444"
+    },
+    "rules": "Avoid large flat areas of color. Use the accent primary (#00E5FF) exclusively for glowing borders, critical CTAs, and active scanning indicators. Never use muddy teals."
+  },
+  "surface_strategies": {
+    "cards": {
+      "style": "Optical Clarity Glassmorphism",
+      "classes": "bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl"
+    },
+    "paywall_overlay": {
+      "style": "Premium Scrim",
+      "classes": "bg-slate-950/60 backdrop-blur-md border-t border-cyan-500/30"
+    },
+    "search_input": {
+      "style": "Tracer Beam Glow",
+      "classes": "bg-slate-900/50 border border-slate-700 focus-within:border-cyan-400 focus-within:shadow-[0_0_30px_-5px_rgba(0,229,255,0.4)] transition-all duration-300 rounded-xl"
+    }
+  },
+  "grids_and_layouts": {
+    "dashboard_bento": "Use a Bento Grid (grid-cols-1 md:grid-cols-12 gap-6). The Risk Score should be a prominent square (col-span-4), Platform Overview should be wide (col-span-8).",
+    "spacing": "Generous Spacing: Use p-6 or p-8 inside cards. The main container should have max-w-7xl and px-6.",
+    "alignment": "Left-align dense data, center-align the main search hero section."
+  },
+  "components": {
+    "search_hero": "Massive centered input in the hero section. Includes a dropdown for 'Platform/Target' (e.g., All Web, Social Only, Deep Web) and the main username input. The 'Scan' button should have a high-contrast background (White or Cyan) with dark text.",
+    "risk_score_circular": "A large circular SVG progress indicator. The stroke color must dynamically shift (Green -> Amber -> Red) based on the score (0-100). Place the large number in the center using JetBrains Mono font.",
+    "platform_badges": "Small pill-shaped tags (rounded-full px-3 py-1 text-xs font-mono border border-white/10 bg-white/5) containing the platform logo (react-icons) and name. Use subtle hover lifts (-translate-y-0.5).",
+    "search_results_list": "Terminal-inspired list. Each result item has a timestamp, platform icon, and a snippet of text.",
+    "paywall_teaser": "Wrap the lower 60% of the results in a container with 'filter blur-sm select-none'. Overlay a high-end glass card in the center with a Lock icon, explaining the €4.99 premium report value, and a prominent 'Unlock Full Analysis' button hooked to Stripe Checkout."
+  },
+  "motion_and_interaction": {
+    "scanning_state": "When the user clicks 'Scan', display a terminal-like text feed ('[+] Initializing OSINT sequence...', '[+] Scanning social matrices...') before revealing the dashboard. Use a simulated loader to build suspense and perceived value.",
+    "hover_states": "All cards must have a subtle hover:border-cyan-500/30 and hover:-translate-y-1 transition.",
+    "entrance": "Stagger the entrance of the Bento grid cards using simple CSS animations or framer-motion (opacity 0 -> 1, y 20 -> 0)."
+  },
+  "visual_enhancers": {
+    "background_effect": "Implement a subtle grid background using pure CSS (e.g., repeating-linear-gradient) with a radial mask to make it fade out at the edges, giving a technical blueprint feel.",
+    "icons": "Install and use 'react-icons' for platform logos (FaInstagram, FaTwitter, FaTiktok) and 'lucide-react' for UI interactions (Search, Lock, ShieldAlert, CheckCircle)."
+  },
+  "dependencies_to_install": [
+    "react-icons",
+    "lucide-react",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "accessibility": {
+    "contrast": "Ensure the text over dark backgrounds maintains at least 4.5:1 ratio. Text should be slate-200 or white.",
+    "aria": "Add aria-hidden='true' to decorative scanning animations.",
+    "testing": "All interactive elements must have data-testid attributes (e.g., data-testid='username-input', data-testid='scan-button', data-testid='unlock-premium-button')."
+  },
+  "universal_guidelines_for_main_agent": [
+    "Do not build generic centered layouts or simplistic flat cards.",
+    "Use layered design elements: backdrop-blur, subtle borders, and glowing shadows to create depth.",
+    "Do not apply 'transition: all' universally. Be specific (transition-colors, transition-transform).",
+    "Always use standard REST/API calls to your FastAPI backend, but ensure UI has graceful loading states while waiting.",
+    "The Paywall overlay MUST prevent the user from seeing or inspecting the actual full data behind it (blur the DOM but also truncate the actual data sent from the backend until paid).",
+    "Ensure the Google Auth integration handles the UI flow seamlessly (e.g., returning to the dashboard after login)."
+  ]
+}
