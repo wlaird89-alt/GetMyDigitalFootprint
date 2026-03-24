@@ -144,28 +144,47 @@ async def check_platform_existence(username: str, platform: dict) -> PlatformRes
     url = platform["url_template"].format(username=username)
     
     try:
-        async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
-            response = await client.get(url, headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        async with httpx.AsyncClient(timeout=8.0, follow_redirects=True) as http_client:
+            response = await http_client.get(url, headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.5",
             })
             
+            content_lower = response.text.lower()
+            final_url = str(response.url).lower()
+            
             # Determine status based on response
-            if response.status_code == 200:
+            if response.status_code == 404:
+                status = "not_found"
+            elif response.status_code in [429, 403, 999]:
+                # Rate limited or blocked - can't determine
+                status = "unknown"
+            elif response.status_code == 200:
                 # Check for common "not found" patterns in content
-                content_lower = response.text.lower()
                 not_found_patterns = [
                     "page not found", "user not found", "account not found",
                     "this page isn't available", "sorry, this page", "doesn't exist",
-                    "no user", "404", "not available"
+                    "no user", "page doesn't exist", "not available", "couldn't find",
+                    "profile not found", "user doesn't exist", "nothing here"
                 ]
+                
+                # Check for login redirects (Instagram does this)
+                login_patterns = ["accounts/login", "login?", "/login", "sign_in"]
+                is_login_redirect = any(p in final_url for p in login_patterns)
+                
                 if any(pattern in content_lower for pattern in not_found_patterns):
                     status = "not_found"
+                elif is_login_redirect:
+                    # Redirected to login - likely means profile exists but needs auth to view
+                    status = "found"
                 else:
                     status = "found"
-            elif response.status_code == 404:
-                status = "not_found"
             else:
                 status = "unknown"
+    except httpx.TimeoutException:
+        logger.warning(f"Timeout checking {platform['name']} for {username}")
+        status = "unknown"
     except Exception as e:
         logger.warning(f"Error checking {platform['name']} for {username}: {str(e)}")
         status = "unknown"
