@@ -567,122 +567,151 @@ async def create_checkout_session(request: Request):
     user = await get_current_user(request)
     user_id = user.user_id if user else None
     
-    # Initialize Stripe
-    api_key = os.environ.get("STRIPE_API_KEY")
+    # Initialize Stripe - use STRIPE_SECRET_KEY (production-ready naming)
+    api_key = os.environ.get("STRIPE_SECRET_KEY")
     if not api_key:
-        raise HTTPException(status_code=500, detail="Payment system not configured")
+        raise HTTPException(status_code=500, detail="Payment system not configured. Please contact support.")
+    
+    # Get optional Price ID from environment (for production with Stripe Dashboard products)
+    stripe_price_id = os.environ.get("STRIPE_PRICE_ID")
     
     host_url = str(request.base_url).rstrip("/")
     webhook_url = f"{host_url}/api/webhook/stripe"
     
-    stripe_checkout = StripeCheckout(api_key=api_key, webhook_url=webhook_url)
-    
-    # Create checkout session - fixed amount on backend (security)
-    success_url = f"{origin_url}/payment/success?session_id={{CHECKOUT_SESSION_ID}}"
-    cancel_url = f"{origin_url}/results/{scan_id}"
-    
-    checkout_request = CheckoutSessionRequest(
-        amount=4.99,  # Fixed price - €4.99
-        currency="eur",
-        success_url=success_url,
-        cancel_url=cancel_url,
-        metadata={
+    try:
+        stripe_checkout = StripeCheckout(api_key=api_key, webhook_url=webhook_url)
+        
+        # Create checkout session
+        success_url = f"{origin_url}/payment/success?session_id={{CHECKOUT_SESSION_ID}}"
+        cancel_url = f"{origin_url}/results/{scan_id}"
+        
+        metadata = {
             "scan_id": scan_id,
-            "user_id": user_id or "anonymous"
+            "user_id": user_id or "anonymous",
+            "product": "digital_footprint_report"
         }
-    )
-    
-    session = await stripe_checkout.create_checkout_session(checkout_request)
-    
-    # Create payment transaction record
-    transaction = PaymentTransaction(
-        user_id=user_id,
-        scan_id=scan_id,
-        session_id=session.session_id,
-        amount=4.99,
-        currency="eur",
-        payment_status="initiated"
-    )
-    
-    transaction_doc = transaction.model_dump()
-    transaction_doc["created_at"] = transaction_doc["created_at"].isoformat()
-    transaction_doc["updated_at"] = transaction_doc["updated_at"].isoformat()
-    await db.payment_transactions.insert_one(transaction_doc)
-    
-    return {
-        "checkout_url": session.url,
-        "session_id": session.session_id
-    }
+        
+        # Use Price ID if configured (production mode), otherwise use custom amount (test mode)
+        if stripe_price_id and not stripe_price_id.startswith("price_1TE8"):  # Skip placeholder
+            # Production mode: Use pre-configured Stripe Price
+            checkout_request = CheckoutSessionRequest(
+                stripe_price_id=stripe_price_id,
+                quantity=1,
+                success_url=success_url,
+                cancel_url=cancel_url,
+                metadata=metadata
+            )
+        else:
+            # Test/development mode: Use custom amount
+            checkout_request = CheckoutSessionRequest(
+                amount=4.99,  # Fixed price - €4.99
+                currency="eur",
+                success_url=success_url,
+                cancel_url=cancel_url,
+                metadata=metadata
+            )
+        
+        session = await stripe_checkout.create_checkout_session(checkout_request)
+        
+        # Create payment transaction record
+        transaction = PaymentTransaction(
+            user_id=user_id,
+            scan_id=scan_id,
+            session_id=session.session_id,
+            amount=4.99,
+            currency="eur",
+            payment_status="initiated"
+        )
+        
+        transaction_doc = transaction.model_dump()
+        transaction_doc["created_at"] = transaction_doc["created_at"].isoformat()
+        transaction_doc["updated_at"] = transaction_doc["updated_at"].isoformat()
+        await db.payment_transactions.insert_one(transaction_doc)
+        
+        return {
+            "checkout_url": session.url,
+            "session_id": session.session_id
+        }
+        
+    except Exception as e:
+        logger.error(f"Stripe checkout error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Payment failed. Please try again.")
 
 @api_router.get("/payments/status/{session_id}")
 async def check_payment_status(session_id: str, request: Request):
     """Check payment status and unlock report if paid"""
-    api_key = os.environ.get("STRIPE_API_KEY")
+    api_key = os.environ.get("STRIPE_SECRET_KEY")
     if not api_key:
         raise HTTPException(status_code=500, detail="Payment system not configured")
     
     host_url = str(request.base_url).rstrip("/")
     webhook_url = f"{host_url}/api/webhook/stripe"
     
-    stripe_checkout = StripeCheckout(api_key=api_key, webhook_url=webhook_url)
-    
-    status = await stripe_checkout.get_checkout_status(session_id)
-    
-    # Find transaction
-    transaction = await db.payment_transactions.find_one({"session_id": session_id}, {"_id": 0})
-    
-    if not transaction:
-        raise HTTPException(status_code=404, detail="Transaction not found")
-    
-    # Update transaction status
-    current_status = transaction.get("payment_status")
-    new_status = status.payment_status
-    
-    # Only process if status changed and payment succeeded
-    if new_status == "paid" and current_status != "paid":
-        # Update transaction
-        await db.payment_transactions.update_one(
-            {"session_id": session_id},
-            {"$set": {
-                "payment_status": "paid",
-                "updated_at": datetime.now(timezone.utc).isoformat()
-            }}
-        )
+    try:
+        stripe_checkout = StripeCheckout(api_key=api_key, webhook_url=webhook_url)
         
-        # Unlock the scan
-        scan_id = transaction.get("scan_id")
-        await db.scans.update_one(
-            {"scan_id": scan_id},
-            {"$set": {"is_paid": True}}
-        )
+        status = await stripe_checkout.get_checkout_status(session_id)
         
-        return {
-            "status": "paid",
-            "scan_id": scan_id,
-            "message": "Payment successful! Report unlocked."
-        }
-    elif new_status == "paid":
-        # Already processed
-        return {
-            "status": "paid",
-            "scan_id": transaction.get("scan_id"),
-            "message": "Report already unlocked."
-        }
-    else:
-        # Update status
-        await db.payment_transactions.update_one(
-            {"session_id": session_id},
-            {"$set": {
-                "payment_status": new_status,
-                "updated_at": datetime.now(timezone.utc).isoformat()
-            }}
-        )
+        # Find transaction
+        transaction = await db.payment_transactions.find_one({"session_id": session_id}, {"_id": 0})
         
-        return {
-            "status": new_status,
-            "scan_id": transaction.get("scan_id"),
-            "message": f"Payment status: {new_status}"
-        }
+        if not transaction:
+            raise HTTPException(status_code=404, detail="Transaction not found")
+        
+        # Update transaction status
+        current_status = transaction.get("payment_status")
+        new_status = status.payment_status
+        
+        # Only process if status changed and payment succeeded
+        if new_status == "paid" and current_status != "paid":
+            # Update transaction
+            await db.payment_transactions.update_one(
+                {"session_id": session_id},
+                {"$set": {
+                    "payment_status": "paid",
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                }}
+            )
+            
+            # Unlock the scan
+            scan_id = transaction.get("scan_id")
+            await db.scans.update_one(
+                {"scan_id": scan_id},
+                {"$set": {"is_paid": True}}
+            )
+            
+            return {
+                "status": "paid",
+                "scan_id": scan_id,
+                "message": "Payment successful! Report unlocked."
+            }
+        elif new_status == "paid":
+            # Already processed
+            return {
+                "status": "paid",
+                "scan_id": transaction.get("scan_id"),
+                "message": "Report already unlocked."
+            }
+        else:
+            # Update status
+            await db.payment_transactions.update_one(
+                {"session_id": session_id},
+                {"$set": {
+                    "payment_status": new_status,
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                }}
+            )
+            
+            return {
+                "status": new_status,
+                "scan_id": transaction.get("scan_id"),
+                "message": f"Payment status: {new_status}"
+            }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Payment status check error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to verify payment. Please try again.")
 
 @api_router.post("/webhook/stripe")
 async def stripe_webhook(request: Request):
@@ -691,7 +720,11 @@ async def stripe_webhook(request: Request):
         body = await request.body()
         signature = request.headers.get("Stripe-Signature")
         
-        api_key = os.environ.get("STRIPE_API_KEY")
+        api_key = os.environ.get("STRIPE_SECRET_KEY")
+        if not api_key:
+            logger.error("Stripe webhook: STRIPE_SECRET_KEY not configured")
+            return {"received": True, "error": "Payment system not configured"}
+        
         host_url = str(request.base_url).rstrip("/")
         webhook_url = f"{host_url}/api/webhook/stripe"
         
@@ -734,7 +767,8 @@ async def health_check():
     return {
         "status": "healthy",
         "serpapi_configured": bool(os.environ.get("SERPAPI_API_KEY", "").strip()),
-        "stripe_configured": bool(os.environ.get("STRIPE_API_KEY"))
+        "stripe_configured": bool(os.environ.get("STRIPE_SECRET_KEY")),
+        "stripe_price_configured": bool(os.environ.get("STRIPE_PRICE_ID", "").strip() and not os.environ.get("STRIPE_PRICE_ID", "").startswith("price_1TE8"))
     }
 
 # Include router

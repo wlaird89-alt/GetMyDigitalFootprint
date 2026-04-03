@@ -55,6 +55,7 @@ export default function Results() {
   const [scanData, setScanData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showPaywall, setShowPaywall] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   useEffect(() => {
     fetchScanData();
@@ -82,6 +83,7 @@ export default function Results() {
   };
 
   const handleUnlock = async () => {
+    setIsProcessingPayment(true);
     try {
       const response = await fetch(`${API}/payments/create-checkout`, {
         method: 'POST',
@@ -95,13 +97,14 @@ export default function Results() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.detail || 'Failed to create checkout');
+        throw new Error(error.detail || 'Payment failed. Please try again.');
       }
 
       const data = await response.json();
       window.location.href = data.checkout_url;
     } catch (error) {
-      toast.error(error.message || 'Payment initialization failed');
+      setIsProcessingPayment(false);
+      toast.error(error.message || 'Payment failed. Please try again.');
     }
   };
 
@@ -296,6 +299,7 @@ export default function Results() {
                 onUnlock={handleUnlock}
                 totalResults={scanData.total_search_results}
                 platformsFound={platformsFound}
+                isLoading={isProcessingPayment}
               />
             )}
           </div>
