@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Search, Eye, Lock, ArrowRight, LogOut, Clock, ChevronDown, User } from 'lucide-react';
+import { Search, Eye, Lock, ArrowRight, LogOut, Clock, ChevronDown, User, Fingerprint } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import {
   DropdownMenu,
@@ -76,12 +76,12 @@ export default function Dashboard() {
       <header className="relative z-20 px-6 py-4 border-b border-slate-800/50">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div 
-            className="flex items-center gap-2 cursor-pointer" 
+            className="flex items-center gap-3 cursor-pointer" 
             onClick={() => navigate('/')}
           >
-            <Shield className="w-8 h-8 text-cyan-400" />
+            <Fingerprint className="w-8 h-8 text-cyan-400" />
             <span className="text-xl font-bold tracking-tight text-white font-['Outfit']">
-              Instagoogleface<span className="text-cyan-400">.com</span>
+              GetMyDigitalFootprint
             </span>
           </div>
 

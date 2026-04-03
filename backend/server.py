@@ -25,7 +25,7 @@ db = client[os.environ['DB_NAME']]
 from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
 
 # Create the main app
-app = FastAPI(title="Instagoogleface.com API")
+app = FastAPI(title="GetMyDigitalFootprint API")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -727,7 +727,7 @@ async def stripe_webhook(request: Request):
 # Health check
 @api_router.get("/")
 async def root():
-    return {"message": "Instagoogleface.com API", "status": "operational"}
+    return {"message": "GetMyDigitalFootprint API", "status": "operational"}
 
 @api_router.get("/health")
 async def health_check():

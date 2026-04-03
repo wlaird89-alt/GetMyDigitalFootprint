@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Shield, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
+import { CheckCircle, Loader2, AlertCircle, Fingerprint } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 
@@ -90,10 +90,10 @@ export default function PaymentSuccess() {
     <div className="min-h-screen cyber-grid-bg flex items-center justify-center px-6">
       <div className="glass-card p-8 max-w-md w-full text-center animate-fade-in-up">
         {/* Logo */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <Shield className="w-8 h-8 text-cyan-400" />
+        <div className="flex items-center justify-center gap-3 mb-8">
+          <Fingerprint className="w-8 h-8 text-cyan-400" />
           <span className="text-xl font-bold text-white font-['Outfit']">
-            Instagoogleface<span className="text-cyan-400">.com</span>
+            GetMyDigitalFootprint
           </span>
         </div>
 

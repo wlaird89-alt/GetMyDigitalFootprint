@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Shield, ArrowLeft, ExternalLink, CheckCircle, XCircle, HelpCircle, Download, User, LogOut, ChevronDown, AlertTriangle, ShieldCheck, Eye, UserX } from 'lucide-react';
+import { ArrowLeft, ExternalLink, CheckCircle, XCircle, HelpCircle, User, LogOut, ChevronDown, AlertTriangle, ShieldCheck, Eye, UserX, Fingerprint } from 'lucide-react';
 import { FaInstagram, FaTwitter, FaTiktok, FaGithub, FaLinkedin, FaYoutube, FaReddit, FaPinterest, FaTwitch, FaSnapchat, FaMedium, FaTumblr } from 'react-icons/fa';
 import { Button } from '../components/ui/button';
 import {
@@ -116,9 +116,9 @@ export default function FullReport() {
               New Scan
             </Button>
             <div className="hidden md:flex items-center gap-2">
-              <Shield className="w-6 h-6 text-cyan-400" />
+              <Fingerprint className="w-6 h-6 text-cyan-400" />
               <span className="text-lg font-bold text-white font-['Outfit']">
-                Instagoogleface<span className="text-cyan-400">.com</span>
+                GetMyDigitalFootprint
               </span>
             </div>
           </div>
@@ -178,7 +178,7 @@ export default function FullReport() {
         <div className="mb-8 animate-fade-in-up">
           <div className="flex items-center gap-2 text-emerald-400 text-sm mb-2">
             <ShieldCheck className="w-4 h-4" />
-            <span>Full Digital Footprint Report</span>
+            <span>Your Complete Digital Footprint Report</span>
           </div>
           <h1 className="text-3xl font-bold text-white font-mono" data-testid="report-username">
             @{reportData.username}
@@ -192,7 +192,7 @@ export default function FullReport() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Risk Score */}
           <div className="md:col-span-4 glass-card p-6 animate-fade-in-up stagger-1" style={{ opacity: 0 }}>
-            <h2 className="text-lg font-semibold text-white mb-4 font-['Outfit']">Risk Assessment</h2>
+            <h2 className="text-lg font-semibold text-white mb-4 font-['Outfit']">Digital Footprint Risk Score</h2>
             <div className="flex flex-col items-center">
               <CircularRiskScore score={reportData.risk_score} level={reportData.risk_level} size="large" />
               <p className={`mt-4 text-lg font-semibold capitalize ${

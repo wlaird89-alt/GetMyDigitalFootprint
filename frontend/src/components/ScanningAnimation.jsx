@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Shield } from 'lucide-react';
+import { Fingerprint } from 'lucide-react';
 
 const scanMessages = [
-  '[+] Initializing OSINT sequence...',
+  '[+] Initializing digital footprint scan...',
   '[+] Scanning social matrices...',
   '[+] Querying platform databases...',
-  '[+] Analyzing digital footprint...',
+  '[+] Analyzing online presence...',
   '[+] Cross-referencing usernames...',
   '[+] Aggregating search results...',
   '[+] Calculating risk score...',
-  '[+] Compiling report data...',
+  '[+] Compiling your report...',
 ];
 
 export default function ScanningAnimation({ username }) {
@@ -48,16 +48,16 @@ export default function ScanningAnimation({ username }) {
     <div className="min-h-screen cyber-grid-bg flex items-center justify-center px-6" data-testid="scanning-animation">
       <div className="glass-card p-8 max-w-lg w-full">
         {/* Logo */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <Shield className="w-8 h-8 text-cyan-400 animate-pulse" />
+        <div className="flex items-center justify-center gap-3 mb-8">
+          <Fingerprint className="w-8 h-8 text-cyan-400 animate-pulse" />
           <span className="text-xl font-bold text-white font-['Outfit']">
-            Instagoogleface<span className="text-cyan-400">.com</span>
+            GetMyDigitalFootprint
           </span>
         </div>
 
         {/* Target Username */}
         <div className="text-center mb-6">
-          <p className="text-slate-500 text-sm">Scanning target</p>
+          <p className="text-slate-500 text-sm">Scanning digital footprint for</p>
           <p className="text-2xl font-mono font-bold text-cyan-400">@{username}</p>
         </div>
 

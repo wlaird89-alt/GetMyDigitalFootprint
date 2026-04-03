@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Shield, Lock, Eye, AlertTriangle, ChevronDown, User, LogOut } from 'lucide-react';
+import { Search, Shield, Lock, Eye, AlertTriangle, ChevronDown, User, LogOut, Fingerprint } from 'lucide-react';
 import { FaInstagram, FaTwitter, FaTiktok, FaGithub, FaLinkedin, FaYoutube } from 'react-icons/fa';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -85,15 +85,18 @@ export default function Landing() {
   }
 
   return (
-    <div className="min-h-screen cyber-grid-bg relative overflow-hidden">
+    <div className="min-h-screen cyber-grid-bg relative overflow-hidden flex flex-col">
       {/* Header */}
       <header className="relative z-10 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Shield className="w-8 h-8 text-cyan-400" />
-            <span className="text-xl font-bold tracking-tight text-white font-['Outfit']">
-              Instagoogleface<span className="text-cyan-400">.com</span>
-            </span>
+          <div className="flex items-center gap-3">
+            <Fingerprint className="w-8 h-8 text-cyan-400" />
+            <div className="flex flex-col">
+              <span className="text-xl font-bold tracking-tight text-white font-['Outfit']">
+                GetMyDigitalFootprint
+              </span>
+              <span className="text-xs text-slate-500 hidden sm:block">getmydigitalfootprint.com</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-4">
@@ -144,14 +147,17 @@ export default function Landing() {
       </header>
 
       {/* Hero Section */}
-      <main className="relative z-10 flex flex-col items-center justify-center px-6 pt-16 pb-24">
+      <main className="relative z-10 flex flex-col items-center justify-center px-6 pt-16 pb-24 flex-1">
         <div className="text-center max-w-4xl mx-auto mb-12 animate-fade-in-up">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 font-['Outfit']">
-            <span className="text-white">Discover Your</span>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-4 font-['Outfit']">
+            <span className="text-white">Scan Your</span>
             <br />
             <span className="text-cyan-400">Digital Footprint</span>
           </h1>
-          <p className="text-base lg:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg lg:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed mb-2">
+            Discover what the internet knows about you
+          </p>
+          <p className="text-base text-slate-500 max-w-2xl mx-auto">
             Enter any username to uncover their presence across social media platforms, 
             analyze exposure risks, and get actionable privacy recommendations.
           </p>
@@ -198,8 +204,8 @@ export default function Landing() {
                 className="btn-primary whitespace-nowrap"
                 data-testid="scan-button"
               >
-                <Search className="w-4 h-4 mr-2" />
-                Scan Username
+                <Fingerprint className="w-4 h-4 mr-2" />
+                Scan My Digital Footprint
               </Button>
             </div>
           </div>
@@ -242,10 +248,23 @@ export default function Landing() {
           <p className="disclaimer-text">
             This tool analyzes publicly available information and provides general insights for informational purposes only. 
             It does not provide legal or professional advice. Nor is this site affiliated with or endorsed by any social media company 
-            or search engine, the name provided is for entertainment purposes only.
+            or search engine.
           </p>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="relative z-10 px-6 py-6 border-t border-slate-800/50">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-slate-500 text-sm">
+            <Fingerprint className="w-4 h-4" />
+            <span>© {new Date().getFullYear()} GetMyDigitalFootprint. All rights reserved.</span>
+          </div>
+          <p className="text-slate-600 text-xs">
+            Discover what the internet knows about you
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
