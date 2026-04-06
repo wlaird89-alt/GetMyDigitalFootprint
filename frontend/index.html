@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#020617" />
+    <meta name="description" content="Discover what the internet knows about you. Scan your digital footprint, uncover risks, and protect your online presence." />
+    <meta name="keywords" content="digital footprint, online presence, username search, OSINT, privacy, social media scan" />
+    <meta property="og:title" content="GetMyDigitalFootprint – Scan Your Online Presence" />
+    <meta property="og:description" content="Discover what the internet knows about you. Scan your digital footprint, uncover risks, and protect your online presence." />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap" rel="stylesheet" />
+    <title>GetMyDigitalFootprint – Scan Your Online Presence</title>
+    <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>
+    <script src="https://assets.emergent.sh/scripts/emergent-main.js"></script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <a
+      id="emergent-badge"
+      target="_blank"
+      href="https://app.emergent.sh/?utm_source=emergent-badge"
+      style="
+        display: inline-flex !important;
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        z-index: 9999;
+        text-decoration: none;
+        color: #000 !important;
+        background-color: #fff !important;
+        padding: 8px 12px;
+        font-family:
+          Inter,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          Roboto,
+          Helvetica,
+          Arial,
+          sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        border-radius: 8px;
+        box-shadow:
+          0 1px 2px rgba(0, 0, 0, 0.05),
+          0 2px 4px rgba(0, 0, 0, 0.05),
+          0 4px 8px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: all 0.15s ease;
+        align-items: center;
+        gap: 8px;
+      "
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 1024 1024"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        style="flex-shrink: 0"
+      >
+        <rect width="1024" height="1024" rx="512" fill="#5046E5" />
+        <path
+          d="M756.96 459.696C761.009 456.476 762.178 450.832 759.753 446.226C729.582 388.905 675.697 346.951 611.627 332.033C544.571 316.429 474.234 331.041 417.969 371.356C361.704 411.671 324.329 474.235 315.047 543.723C305.765 613.212 325.429 683.435 369.261 738.109C413.093 792.783 477.303 827.21 547.361 833.143C617.419 839.077 686.843 816.025 739.338 769.629C791.832 723.233 822.728 657.076 825.01 586.778C826.971 525.892 807.168 466.513 769.4 419.172C765.939 414.836 759.934 413.934 755.34 417.021L702.879 452.251C698.405 455.254 697.286 461.113 700.509 465.446C726.188 500.004 738.757 543.072 737.363 586.838C735.649 638.02 714.065 686.504 677.443 722.028C640.821 757.553 591.719 777.69 540.494 778.012C489.269 778.333 439.923 758.814 402.864 723.759C365.805 688.704 343.625 640.505 341.264 589.35C338.902 538.194 356.546 487.964 391.029 450.113C425.513 412.262 473.377 389.467 524.498 386.486C572.638 383.69 620.043 398.472 658.093 427.875C662.566 431.331 669.006 430.529 672.671 426.225L756.96 459.696Z"
+          fill="white"
+        />
+        <circle cx="512.5" cy="586.5" r="83.5" fill="white" />
+      </svg>
+      Made with Emergent
+    </a>
+    <script>
+      (function () {
+        const badge = document.getElementById('emergent-badge');
+        if (badge) {
+          badge.addEventListener('mouseenter', function () {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow =
+              '0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1)';
+          });
+          badge.addEventListener('mouseleave', function () {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow =
+              '0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.05), 0 4px 8px rgba(0, 0, 0, 0.05)';
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

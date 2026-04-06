@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Landing from "./pages/Landing";
@@ -8,7 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import { Toaster } from "./components/ui/sonner";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 // Auth Context
@@ -142,9 +142,6 @@ const AppRouter = () => {
     </Routes>
   );
 };
-
-// Import React at the top
-import React from 'react';
 
 function App() {
   return (
