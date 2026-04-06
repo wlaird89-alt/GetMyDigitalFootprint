@@ -55,12 +55,11 @@ export default function Landing() {
         })
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || 'Scan failed');
-      }
-
       const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.detail || 'Scan failed');
+      }
       
       // Short delay to show scanning animation
       setTimeout(() => {

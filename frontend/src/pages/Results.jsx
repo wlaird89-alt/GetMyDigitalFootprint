@@ -95,12 +95,12 @@ export default function Results() {
         })
       });
 
+      const data = await response.json();
+      
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || 'Payment failed. Please try again.');
+        throw new Error(data.detail || 'Payment failed. Please try again.');
       }
 
-      const data = await response.json();
       window.location.href = data.checkout_url;
     } catch (error) {
       setIsProcessingPayment(false);
